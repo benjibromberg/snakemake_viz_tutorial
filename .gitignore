@@ -1,0 +1,8 @@
+# OS Files
+.DS_Store
+
+# Workflow Output
+.snakemake
+.snakemake/**
+logs/**
+results/**
