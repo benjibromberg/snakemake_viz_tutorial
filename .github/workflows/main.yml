@@ -102,7 +102,7 @@ jobs:
           directory: .
           snakefile: workflow/Snakefile
           args: >
-            all --workflow-profile profiles/github-actions
+            get_data --workflow-profile profiles/github-actions
           show-disk-usage-on-error: true
           snakemake-version: ${{ matrix.version.snakemake }}
       - name: Upload ./logs/
