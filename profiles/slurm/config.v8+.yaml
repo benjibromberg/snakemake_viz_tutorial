@@ -1,5 +1,7 @@
 executor: slurm
-# conda-cleanup-pkgs: tarballs
+use-singularity: true
+use-conda: true
+conda-cleanup-pkgs: cache
 verbose: true
 show-failed-logs: true
 jobs: 100 # Slurm jobscript size limit
