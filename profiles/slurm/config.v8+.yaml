@@ -1,0 +1,12 @@
+executor: slurm
+# conda-cleanup-pkgs: tarballs
+verbose: true
+show-failed-logs: true
+jobs: 100 # Slurm jobscript size limit
+default-resources:
+  slurm_partition: "batch"
+  slurm_account: "default"
+  runtime: 4320
+  mem_mb: 32000
+  cpus_per_task: 12
+  slurm_extra: '"--mail-type=ALL --mail-user=benjamin.bromberg@tufts.edu"'

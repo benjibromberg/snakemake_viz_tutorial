@@ -1,0 +1,64 @@
+
+container: "docker://continuumio/miniconda3:25.1.1-2"
+
+rule all:
+    input:
+        "results/plots/horsepower_vs_mpg.ggplot.svg",
+        "results/plots/horsepower_vs_mpg.altair.html",
+        "results/tables/cars",
+
+
+rule get_data:
+    output:
+        "resources/data/cars.tsv",
+    log:
+        "logs/get_data.log",
+    conda:
+        "envs/download.yaml"
+    script:
+        "scripts/get_data.py"
+
+
+rule plot_with_r:
+    input:
+        "resources/data/cars.tsv",
+    output:
+        "results/plots/horsepower_vs_mpg.ggplot.svg",
+    log:
+        "logs/plot_horsepower_vs_mpg.log",
+    conda:
+        "envs/rstats.yaml"
+    script:
+        "scripts/plot_horsepower_vs_mpg.R"
+
+
+rule plot_with_python:
+    input:
+        "resources/data/cars.tsv",
+    output:
+        "results/plots/horsepower_vs_mpg.altair.html",
+    log:
+        "logs/plot_horsepower_vs_mpg.py",
+    conda:
+        "envs/pystats.yaml"
+    script:
+        "scripts/plot_horsepower_vs_mpg.py"
+
+
+rule view_with_datavzrd:
+    input:
+        config="resources/datavzrd/cars.yaml",
+        table="resources/data/cars.tsv",
+    output:
+        report(
+            directory("results/tables/cars"),
+            htmlindex="index.html",
+            caption="report/cars.rst",
+            category="Tables",
+            labels={"table": "cars"},
+        ),
+    log:
+        "logs/datavzrd.log",
+    wrapper:
+        "v5.10.0/utils/datavzrd"
+
