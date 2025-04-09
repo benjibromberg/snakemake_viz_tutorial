@@ -64,4 +64,3 @@ rule view_with_datavzrd:
         "logs/datavzrd.log",
     wrapper:
         "v5.10.0/utils/datavzrd"
-
