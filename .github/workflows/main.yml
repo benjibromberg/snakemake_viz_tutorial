@@ -1,0 +1,144 @@
+# .github/workflow/main.yml
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches-ignore: []
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  Formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Run Super-Linter
+        uses: github/super-linter@v7
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_SNAKEMAKE_SNAKEFMT: true
+          VALIDATE_YAML: true
+          VALIDATE_R: true
+          VALIDATE_PYTHON_PYLINT: true
+
+  Linting:
+    name: Linting (using ${{ matrix.version.name }} versions)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        version:
+          - name: stable
+            snakemake: 8.27.1
+            allow_failure: false
+          - name: latest
+            snakemake: "*"
+            allow_failure: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Lint workflow
+        uses: snakemake/snakemake-github-action@v2
+        continue-on-error: ${{ matrix.version.allow_failure }}
+        with:
+          directory: .
+          snakefile: workflow/Snakefile
+          args: --lint
+          snakemake-version: ${{ matrix.version.snakemake }}
+
+  Snakemake_Env_Init:
+    name: Build Snakemake workflow cache (using ${{ matrix.version.name }} versions)
+    runs-on: ubuntu-latest
+    needs:
+      - Linting
+      - Formatting
+    strategy:
+      fail-fast: true
+      matrix:
+        version:
+          - name: stable
+            snakemake: 8.27.1
+            singularity: 3.8.4
+            allow_failure: false
+          - name: latest
+            snakemake: "*"
+            singularity:
+            allow_failure: true
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          # this might remove tools that are actually needed,
+          # if set to "true" but frees about 6 GB
+          tool-cache: false
+
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: false
+          swap-storage: true
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Cache Singularity Images
+        uses: actions/cache@v4
+        with:
+          path: .snakemake/singularity
+          key: ${{ runner.os }}-singularity-${{ matrix.version.singularity }}-${{ hashFiles('workflow/rules/*.smk') }}
+          restore-keys: |
+            ${{ runner.os }}-singularity-${{ matrix.version.singularity }}-
+      - name: Cache Conda Packages
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/conda_pkgs_dir
+          key: ${{ runner.os }}-conda-pkgs-${{ matrix.version.snakemake }}-${{ hashFiles('.snakemake.environment.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-pkgs-${{ matrix.version.snakemake }}-
+      - name: Cache snakemake Conda Environment
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/miniconda3/envs/snakemake
+          key: ${{ runner.os }}-snakemake-env-${{ hashFiles('.snakemake.environment.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-snakemake-env-${{ matrix.version.snakemake }}-
+      - name: Install Singularity (specified version)
+        if: ${{ matrix.version.name != 'latest' }}
+        uses: singularityhub/install-singularity@main
+        with:
+          singularity-version: ${{ matrix.version.singularity }}
+      - name: Install Singularity (default latest)
+        if: ${{ matrix.version.name == 'latest' }}
+        uses: singularityhub/install-singularity@main
+      - name: Run Snakemake on dummy_all_images to create cache files
+        uses: snakemake/snakemake-github-action@v2
+        continue-on-error: ${{ matrix.version.allow_failure }}
+        with:
+          directory: .
+          snakefile: workflow/Snakefile
+          args: >
+            all --workflow-profile profiles/github-actions
+          show-disk-usage-on-error: true
+          snakemake-version: ${{ matrix.version.snakemake }}
+      - name: Upload ./logs/
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: env-init-${{ matrix.version.name }}-logs
+          path: logs/
