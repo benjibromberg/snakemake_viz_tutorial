@@ -1,0 +1,18 @@
+# profiles/github-actions/config.v8+.yaml
+# Configured for exclusive use with GitHub Actions testing workflow
+# See .github/workflows/main.yml
+
+# Profile Settings
+use-singularity: true
+use-conda: true
+conda-cleanup-pkgs: cache
+all-temp: true
+show-failed-logs: true
+verbose: true
+cores: all
+default-resources:
+  mem_mb: 16000
+
+set-resources:
+  star_index:
+    mem_mb: 16000
