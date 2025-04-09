@@ -1,3 +1,5 @@
+# profiles/slurm/config.v8+.yaml
+
 executor: slurm
 use-singularity: true
 use-conda: true

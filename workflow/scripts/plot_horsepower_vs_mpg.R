@@ -1,3 +1,5 @@
+# workflow/scripts/plot_horsepower_vs_mpg.R
+
 library(readr)
 library(ggplot2)
 
