@@ -19,9 +19,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: true
       - name: Run Super-Linter
         uses: github/super-linter@v7
         env:
@@ -48,8 +45,6 @@ jobs:
             allow_failure: false
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
       - name: Lint workflow
         uses: snakemake/snakemake-github-action@v2
         continue-on-error: ${{ matrix.version.allow_failure }}
@@ -95,29 +90,6 @@ jobs:
           swap-storage: true
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Cache Singularity Images
-        uses: actions/cache@v4
-        with:
-          path: .snakemake/singularity
-          key: ${{ runner.os }}-singularity-${{ matrix.version.singularity }}-${{ hashFiles('workflow/rules/*.smk') }}
-          restore-keys: |
-            ${{ runner.os }}-singularity-${{ matrix.version.singularity }}-
-      - name: Cache Conda Packages
-        uses: actions/cache@v4
-        with:
-          path: /home/runner/conda_pkgs_dir
-          key: ${{ runner.os }}-conda-pkgs-${{ matrix.version.snakemake }}-${{ hashFiles('.snakemake.environment.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-pkgs-${{ matrix.version.snakemake }}-
-      - name: Cache snakemake Conda Environment
-        uses: actions/cache@v4
-        with:
-          path: /home/runner/miniconda3/envs/snakemake
-          key: ${{ runner.os }}-snakemake-env-${{ hashFiles('.snakemake.environment.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-snakemake-env-${{ matrix.version.snakemake }}-
       - name: Install Singularity (specified version)
         if: ${{ matrix.version.name != 'latest' }}
         uses: singularityhub/install-singularity@main
@@ -126,7 +98,7 @@ jobs:
       - name: Install Singularity (default latest)
         if: ${{ matrix.version.name == 'latest' }}
         uses: singularityhub/install-singularity@main
-      - name: Run Snakemake on dummy_all_images to create cache files
+      - name: Run Snakemake workflow
         uses: snakemake/snakemake-github-action@v2
         continue-on-error: ${{ matrix.version.allow_failure }}
         with:
