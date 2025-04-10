@@ -6,11 +6,11 @@
 executor: slurm
 use-singularity: true
 use-conda: true
-all-temp: true
-show-failed-logs: true
 verbose: true
+show-failed-logs: true
 jobs: 1
 latency-wait: 120
+all-temp: true
 default-resources:
   slurm_account: "runner"
   runtime: 3600
