@@ -43,13 +43,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Lint workflow
-        uses: snakemake/snakemake-github-action@v2
+        uses: benjibromberg/snakemake-github-action@v0.1.0
         continue-on-error: ${{ matrix.version.allow_failure }}
         with:
           directory: .
           snakefile: workflow/Snakefile
           args: --lint
           snakemake-version: ${{ matrix.version.snakemake }}
+          snakemake-executor-plugin-slurm-version: 1.2.0
 
   Snakemake_Env_Init:
     name: Run Snakemake workflow (using ${{ matrix.version.name }} versions)
@@ -108,7 +109,7 @@ jobs:
         if: ${{ matrix.version.name == 'latest' }}
         uses: singularityhub/install-singularity@main
       - name: Run Snakemake workflow
-        uses: snakemake/snakemake-github-action@v2
+        uses: benjibromberg/snakemake-github-action@v0.1.0
         continue-on-error: ${{ matrix.version.allow_failure }}
         with:
           directory: .
@@ -117,6 +118,7 @@ jobs:
             get_data --workflow-profile profiles/github-actions
           show-disk-usage-on-error: true
           snakemake-version: ${{ matrix.version.snakemake }}
+          snakemake-executor-plugin-slurm-version: 1.2.0
       - name: Upload ./logs/
         if: always()
         uses: actions/upload-artifact@v4
