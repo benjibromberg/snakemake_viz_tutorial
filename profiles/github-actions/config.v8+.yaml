@@ -9,6 +9,7 @@ use-conda: true
 all-temp: true
 show-failed-logs: true
 verbose: true
-cores: all
+jobs: 1
 default-resources:
-  mem_mb: 16000
+  mem_mb: 4000
+  cpus_per_task: 1
