@@ -9,10 +9,10 @@ use-conda: true
 all-temp: true
 show-failed-logs: true
 verbose: true
-jobs: 4
+jobs: 1
 latency-wait: 120
 default-resources:
   slurm_account: "runner"
   runtime: 3600
-  mem_mb: 16000
+  mem_mb: 8000
   cpus_per_task: 1
