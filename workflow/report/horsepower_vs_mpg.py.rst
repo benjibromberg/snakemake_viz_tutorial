@@ -1,0 +1,1 @@
+A plot of the horsepower vs. miles per gallon from the cars dataset, created with Altair.

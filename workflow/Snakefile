@@ -4,6 +4,9 @@
 container: "docker://continuumio/miniconda3:25.1.1-2"
 
 
+report: "workflow/report/workflow.rst"
+
+
 rule all:
     input:
         "results/plots/horsepower_vs_mpg.ggplot.svg",
@@ -26,7 +29,12 @@ rule plot_with_r:
     input:
         "resources/data/cars.tsv",
     output:
-        "results/plots/horsepower_vs_mpg.ggplot.svg",
+        report(
+            "results/plots/horsepower_vs_mpg.ggplot.svg",
+            category="Plots",
+            labels={"plot": "horsepower_vs_mpg", "approach": "ggplot"},
+            caption="report/horsepower_vs_mpg.rst",
+        ),
     log:
         "logs/plot_horsepower_vs_mpg.log",
     conda:
@@ -39,7 +47,12 @@ rule plot_with_python:
     input:
         "resources/data/cars.tsv",
     output:
-        "results/plots/horsepower_vs_mpg.altair.html",
+        report(
+            "results/plots/horsepower_vs_mpg.altair.html",
+            category="Plots",
+            labels={"plot": "horsepower_vs_mpg", "approach": "altair"},
+            caption="report/horsepower_vs_mpg.rst",
+        ),
     log:
         "logs/plot_horsepower_vs_mpg.py",
     conda:
