@@ -11,5 +11,7 @@ show-failed-logs: true
 verbose: true
 jobs: 1
 default-resources:
+  slurm_account: "runner"
+  runtime: 3600
   mem_mb: 16000
   cpus_per_task: 4
