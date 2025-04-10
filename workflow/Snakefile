@@ -33,7 +33,7 @@ rule plot_with_r:
             "results/plots/horsepower_vs_mpg.ggplot.svg",
             category="Plots",
             labels={"plot": "horsepower_vs_mpg", "approach": "ggplot"},
-            caption="report/horsepower_vs_mpg.rst",
+            caption="report/horsepower_vs_mpg.r.rst",
         ),
     log:
         "logs/plot_horsepower_vs_mpg.log",
@@ -51,7 +51,7 @@ rule plot_with_python:
             "results/plots/horsepower_vs_mpg.altair.html",
             category="Plots",
             labels={"plot": "horsepower_vs_mpg", "approach": "altair"},
-            caption="report/horsepower_vs_mpg.rst",
+            caption="report/horsepower_vs_mpg.py.rst",
         ),
     log:
         "logs/plot_horsepower_vs_mpg.py",
