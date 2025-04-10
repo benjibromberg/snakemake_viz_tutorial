@@ -4,7 +4,6 @@ executor: slurm
 use-singularity: true
 use-conda: true
 singularity-args: "--home /cluster/tufts/kaplanlab/bbromb01/smk_viz_test1/snakemake_viz_tutorial --env PATH=/opt/conda/bin:$PATH"
-conda-cleanup-pkgs: cache
 verbose: true
 show-failed-logs: true
 jobs: 1
