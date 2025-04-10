@@ -6,11 +6,11 @@ use-conda: true
 conda-cleanup-pkgs: cache
 verbose: true
 show-failed-logs: true
-jobs: 100 # Slurm jobscript size limit
+jobs: 1
 default-resources:
   slurm_partition: "batch"
   slurm_account: "default"
   runtime: 4320
-  mem_mb: 32000
-  cpus_per_task: 12
+  mem_mb: 1000
+  cpus_per_task: 1
   slurm_extra: '"--mail-type=ALL --mail-user=benjamin.bromberg@tufts.edu"'
