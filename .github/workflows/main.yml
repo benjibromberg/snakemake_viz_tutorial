@@ -50,7 +50,7 @@ jobs:
           snakefile: workflow/Snakefile
           args: --lint
           snakemake-version: ${{ matrix.version.snakemake }}
-          snakemake-executor-plugin-slurm-version: 1.2.0
+          snakemake-executor-plugin-slurm-version: 1.1.0
 
   Snakemake_Env_Init:
     name: Run Snakemake workflow (using ${{ matrix.version.name }} versions)
@@ -118,7 +118,7 @@ jobs:
             get_data --workflow-profile profiles/github-actions
           show-disk-usage-on-error: true
           snakemake-version: ${{ matrix.version.snakemake }}
-          snakemake-executor-plugin-slurm-version: 1.2.0
+          snakemake-executor-plugin-slurm-version: 1.1.0
       - name: Upload ./logs/
         if: always()
         uses: actions/upload-artifact@v4
