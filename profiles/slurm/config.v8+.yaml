@@ -1,16 +1,17 @@
 # profiles/slurm/config.v8+.yaml
 
+# Profile Settings
 executor: slurm
 use-singularity: true
 use-conda: true
-singularity-args: "--home /cluster/tufts/kaplanlab/bbromb01/smk_viz_test1/snakemake_viz_tutorial --env PATH=/opt/conda/bin:$PATH --env CONDA_EXEC_PATH=/opt/conda/bin/conda"
 verbose: true
 show-failed-logs: true
 jobs: 1
+latency-wait: 120
 default-resources:
   slurm_partition: "batch"
   slurm_account: "default"
   runtime: 4320
-  mem_mb: 1000
+  mem_mb: 4000
   cpus_per_task: 1
   slurm_extra: '"--mail-type=ALL --mail-user=benjamin.bromberg@tufts.edu"'
